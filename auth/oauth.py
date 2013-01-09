@@ -11,6 +11,7 @@ class Token(m.Model, oauth.Token):
     """
     key = m.TextField(primary_key=True)
     secret = m.TextField()
+    last_modified = m.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True

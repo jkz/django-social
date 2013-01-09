@@ -6,16 +6,13 @@ from django.shortcuts import redirect
 
 from authlib import oauth2
 
-from utils.fields import TimestampField
-
-
 #TODO: the callback_url system is shaky (and has TMI atm)
 def CALLBACK_KEY(request):
     return request.namespace + '_oauth2_callback_url'
 
 class Token(m.Model, oauth2.Token):
     key = m.TextField(primary_key=True)
-    created_time = TimestampField()
+    created_time = m.DateTimeField()
     last_modified = m.DateTimeField(auto_now=True)
 
     class Meta:
