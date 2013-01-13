@@ -19,3 +19,12 @@ class Interface:
         in the request or None
         """
         raise NotImplementedError
+
+    def auth_process(self, **creds):
+        """
+        Return credentials provided by an authenticating user.
+        Called by auth_callback with paramaters returned after redirecting
+        a user for authentication. This method could store the credentials in a
+        backend.
+        """
+        return creds

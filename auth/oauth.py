@@ -59,8 +59,8 @@ class App(m.Model, oauth.App):
             raise oauth.Error("Parameter missing in request!")
         provider = self.oauth()
         token, query = provider.get_access_token(key, secret, verifier)
-        return self.process_access_token(token, **query)
+        return self.auth_process(token, **query)
 
-    def process_creds(self, oauth_token, **query):
+    def auth_process(self, oauth_token, **query):
         return oauth_token
 

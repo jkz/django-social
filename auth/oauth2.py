@@ -45,8 +45,8 @@ class App(m.Model, oauth2.App):
                 request.get_host() + request.path)
 
         creds = self.oauth2().exchange_code(code, callback_url, **kwargs)
-        return self.process_creds(**creds)
+        return self.auth_process(**creds)
 
-    def process_credentials(self, **creds):
-        raise NotImplementedError
+    def auth_process(self, **creds):
+        return creds
 
