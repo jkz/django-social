@@ -1,2 +1,4 @@
 Django==1.4.1
+django-celery
+
 -e git+https://github.com/jessethegame/python-authlib.git#egg=authlib
