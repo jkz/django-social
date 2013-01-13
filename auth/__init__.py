@@ -8,8 +8,8 @@ class Interface:
     """
     def auth_request(self, request, callback_url):
         """
-        Return an HttpResponse object which authenticates a user
-        and redirects back to given callback_url.
+        Return an url to redirect an authenticates a user to,
+        and redirect back to given callback_url afterwards.
         """
         raise NotImplementedError
 

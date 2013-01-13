@@ -1,5 +1,4 @@
 from django.db import models as m
-from django.shortcuts import redirect
 
 #XXX Some parent models from this class would be nice
 #from authlib import basic
@@ -17,7 +16,7 @@ class Token(object):
 
 class App(object):
     def auth_request(self, request, callback_url):
-        return redirect(self.service.get_redirect_url(callback_url=callback_url))
+        return self.service.get_redirect_url(callback_url=callback_url)
 
     @property
     def auth_callback(self):

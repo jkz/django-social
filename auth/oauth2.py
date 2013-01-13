@@ -2,7 +2,6 @@
 from authlib.oauth import *
 
 import django.db.models as m
-from django.shortcuts import redirect
 
 from authlib import oauth2
 
@@ -29,7 +28,7 @@ class App(m.Model, oauth2.App):
     def auth_request(self, request, callback_url, **kwargs):
         # Callback url is saved so it can be passed to an exchange_code call.
         request.session[CALLBACK_KEY(request)]= callback_url
-        return redirect(self.oauth2().request_code(callback_url, **kwargs))
+        return self.oauth2().request_code(callback_url, **kwargs)
 
     def auth_callback(self, request):
         if request.GET.get('error'):

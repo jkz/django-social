@@ -45,7 +45,7 @@ class App(m.Model, oauth.App):
             raise oauth.Error('oauth_callback not confirmed')
 
         request.session[self.oauth_session_key] = data['oauth_token_secret']
-        return redirect(provider.get_authorize_url(oauth_token=data['oauth_token']))
+        return provider.get_authorize_url(oauth_token=data['oauth_token'])
 
     def auth_callback(self, request):
         """
