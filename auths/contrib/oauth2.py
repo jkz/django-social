@@ -11,7 +11,7 @@ def CALLBACK_KEY(request):
 
 class Token(m.Model, oauth2.Token):
     key = m.TextField(primary_key=True)
-    created_time = m.DateTimeField()
+    #created_time = m.DateTimeField()
     last_modified = m.DateTimeField(auto_now=True)
 
     class Meta:
@@ -25,10 +25,18 @@ class App(m.Model, oauth2.App):
     class Meta:
         abstract = True
 
+    def auth_process(self, **creds):
+        return creds
+
+
+class Provider(oauth.Provider):
+    def secret_session_key(self):
+        return '{}_oauth2_secret_session_key'.format(self.host)
+
     def auth_request(self, request, callback_url, **kwargs):
         # Callback url is saved so it can be passed to an exchange_code call.
-        request.session[CALLBACK_KEY(request)]= callback_url
-        return self.oauth2().request_code(callback_url, **kwargs)
+        request.session[self.secret_session_key()] = callback_url
+        return self.request_code(callback_url, **kwargs)
 
     def auth_callback(self, request):
         if request.GET.get('error'):
@@ -43,9 +51,5 @@ class App(m.Model, oauth2.App):
                 CALLBACK_KEY(request),
                 request.get_host() + request.path)
 
-        creds = self.oauth2().exchange_code(code, callback_url, **kwargs)
-        return self.auth_process(**creds)
-
-    def auth_process(self, **creds):
-        return creds
+        return self.exchange_code(code, callback_url, **kwargs)
 

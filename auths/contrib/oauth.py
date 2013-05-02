@@ -2,10 +2,11 @@
 from authlib.oauth import *
 
 import django.db.models as m
+from django.utils.translation import ugettext as _
 
 import authlib.oauth as oauth
 
-class Token(m.Model, oauth.Token):
+class TokenModel(m.Model, oauth.TokenInterface):
     """
     Represents an end user of an auhtenticating service.
     """
@@ -22,45 +23,40 @@ class Token(m.Model, oauth.Token):
                 'oauth_token_secret': self.secret}
 
 
-class App(m.Model, oauth.App):
+class ConsumerModel(m.Model, oauth.ConsumerInterface):
     key = m.TextField(primary_key=True)
     secret = m.TextField()
 
     class Meta:
         abstract = True
 
-    @property
-    def oauth_session_key(self):
-        return '%s_oauth_session_key' % self._meta.app_label
+
+class Provider(oauth.Provider):
+    def _secret_session_key(self):
+        return '{}_oauth_secret_session_key'.format(self.host)
 
     def auth_request(self, request, callback_url):
         """
         Request an authentication token and secret, save the secret for later,
         then redirect to an authentication url.
         """
-        provider = self.oauth()
-        provider.auth.options['oauth_callback'] = callback_url
-        data = provider.get_request_token()
+        self.auth.options['oauth_callback'] = callback_url
+        data = self.get_request_token()
         if not data['oauth_callback_confirmed'] == 'true':
-            raise oauth.Error('oauth_callback not confirmed')
+            raise oauth.Error(_("oauth_callback not confirmed"))
 
-        request.session[self.oauth_session_key] = data['oauth_token_secret']
-        return provider.get_authorize_url(oauth_token=data['oauth_token'])
+        request.session[self._secret_session_key()] = data['oauth_token_secret']
+        return self.get_authorize_url(oauth_token=data['oauth_token'])
 
     def auth_callback(self, request):
         """
         Return the credentials of an authenticating user.
         """
         try:
-            secret = request.session[self.oauth_session_key]
+            secret = request.session[self._secret_session_key()]
             key = request.GET['oauth_token']
             verifier = request.GET['oauth_verifier']
         except KeyError:
-            raise oauth.Error("Parameter missing in request!")
-        provider = self.oauth()
-        token, query = provider.get_access_token(key, secret, verifier)
-        return self.auth_process(token, **query)
-
-    def auth_process(self, oauth_token, **query):
-        return oauth_token
+            raise oauth.Error(_("Parameter missing in request!"))
+        return self.get_access_token(key, secret, verifier)
 
