@@ -14,8 +14,3 @@ class UserBackend(ModelBackend):
         if user and user.is_authenticated():
             return user
 
-
-    def get_user(self, pk):
-        from django.contrib.auth import get_user_model
-        model = get_user_model()
-        return model.objects.get(pk=pk)

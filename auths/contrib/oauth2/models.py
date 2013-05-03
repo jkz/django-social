@@ -1,11 +1,11 @@
 # Make this module a wrapper around authlib.oauth2
-from authlib.oauth import *
+from authlib.oauth2 import *
 
 import django.db.models as m
 
 from authlib import oauth2
 
-class AbstractToken(m.Model, oauth2.Token):
+class AbstractToken(m.Model, oauth2.TokenInterface):
     key = m.TextField(primary_key=True)
     #created_time = m.DateTimeField()
     last_modified = m.DateTimeField(auto_now=True)
@@ -14,7 +14,7 @@ class AbstractToken(m.Model, oauth2.Token):
         abstract = True
 
 
-class AbstractConsumer(m.Model, oauth2.App):
+class AbstractConsumer(m.Model, oauth2.ConsumerInterface):
     key = m.TextField(primary_key=True)
     secret = m.TextField()
 
@@ -25,7 +25,7 @@ class AbstractConsumer(m.Model, oauth2.App):
         return creds
 
 
-class Provider(oauth.Provider):
+class Provider(oauth2.Provider):
     def secret_session_key(self):
         return '{}_oauth2_secret_session_key'.format(self.host)
 
