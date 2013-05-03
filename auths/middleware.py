@@ -16,30 +16,31 @@ class AuthMiddleware:
         """
         Requires a configuration
 
-        AUTH_CONF = {
-            'consumer': 'ConsumerClass', # optional, defaults to 'Consumer'
-            'provider': 'ProviderClass', # optional, defaults to 'Provider'
-            'app': 'app_label',          # optional, if request.namespace
-            'creds': {
-                ...
+        AUTHS = {
+            'default': {
+                'consumer': 'Consumer', # optional, defaults to 'Consumer'
+                'app': 'app_label',     # optional, if request.namespace
+                'creds': {
+                    ...
+                }
             }
         }
         """
-        conf = settings.AUTH_CONF.get(getattr(request, 'namespace', 'default'))
+        conf = settings.AUTHS.get(getattr(request, 'namespace', 'default'))
 
-        module = import_module(conf.get('app', request.namespace))
+        namespace = conf.get('app', getattr(request, 'namespace', None))
+
+        module = import_module(namespace)
 
         Consumer = getattr(module, conf.get('consumer', 'Consumer'))
-        Provider = getattr(module, conf.get('provider', 'Provider'))
 
-        request.consumer = Consumer(**conf.creds)
-        request.provider = Provider(request.consumer)
+        creds = conf.get('creds', {})
 
-'''
-class TokenMiddleware:
-        if not user.is_authenticated():
+        request.consumer = Consumer(**creds)
+        request.provider = request.consumer.provider
+
+        if not request.user.is_authenticated():
             return
 
         request.token = request.consumer.get_token(request.user)
-'''
 

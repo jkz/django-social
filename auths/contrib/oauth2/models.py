@@ -5,11 +5,7 @@ import django.db.models as m
 
 from authlib import oauth2
 
-#TODO: the callback_url system is shaky (and has TMI atm)
-def CALLBACK_KEY(request):
-    return request.namespace + '_oauth2_callback_url'
-
-class Token(m.Model, oauth2.Token):
+class AbstractToken(m.Model, oauth2.Token):
     key = m.TextField(primary_key=True)
     #created_time = m.DateTimeField()
     last_modified = m.DateTimeField(auto_now=True)
@@ -18,7 +14,7 @@ class Token(m.Model, oauth2.Token):
         abstract = True
 
 
-class App(m.Model, oauth2.App):
+class AbstractConsumer(m.Model, oauth2.App):
     key = m.TextField(primary_key=True)
     secret = m.TextField()
 
@@ -38,7 +34,7 @@ class Provider(oauth.Provider):
         request.session[self.secret_session_key()] = callback_url
         return self.request_code(callback_url, **kwargs)
 
-    def auth_callback(self, request):
+    def auth_callback(self, request, **kwargs):
         if request.GET.get('error'):
             raise oauth2.Error('oauth2', request.GET.get('error_description'))
 
@@ -48,7 +44,7 @@ class Provider(oauth.Provider):
 
         # Retrieve the callback url that was saved, otherwise build it
         callback_url = request.session.get(
-                CALLBACK_KEY(request),
+                self.secret_session_key(),
                 request.get_host() + request.path)
 
         return self.exchange_code(code, callback_url, **kwargs)

@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 
 import authlib.oauth as oauth
 
-class TokenModel(m.Model, oauth.TokenInterface):
+class AbstractToken(m.Model, oauth.TokenInterface):
     """
     Represents an end user of an auhtenticating service.
     """
@@ -23,7 +23,7 @@ class TokenModel(m.Model, oauth.TokenInterface):
                 'oauth_token_secret': self.secret}
 
 
-class ConsumerModel(m.Model, oauth.ConsumerInterface):
+class AbstractConsumer(m.Model, oauth.ConsumerInterface):
     key = m.TextField(primary_key=True)
     secret = m.TextField()
 
