@@ -43,7 +43,7 @@ class TokenManager(auth.BaseUserManager):
         """
         if not username:
             raise ValueError('The given username must be set')
-        user = self.model(username=username)
+        user = self.model(username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
