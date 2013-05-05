@@ -16,7 +16,7 @@ class UserManager(auth.BaseUserManager):
 
 class User(auth.AbstractBaseUser):
     uuid = m.CharField(unique=True, default=uuid4, max_length=64)
-    email = m.EmailField(unique=True)
+    email = m.EmailField(null=True, unique=True)
 
     USERNAME_FIELD = 'uuid'
 
@@ -28,8 +28,6 @@ class User(auth.AbstractBaseUser):
 
 class AccountManager(m.Manager):
     def get_for_child(self, child):
-        if not user:
-            return None
         content_type = ContentType.objects.get_for_model(child)
         return self.get(content_type=content_type, object_id=child.pk)
 
@@ -40,6 +38,10 @@ class Account(m.Model):
     object_id = m.PositiveIntegerField()
     child = generic.GenericForeignKey('content_type', 'object_id')
 
+    objects = AccountManager()
+
     class Meta:
         unique_together = [('content_type', 'object_id'), ('content_type', 'parent')]
 
+    def __str__(self):
+        return '{} as {}'.format(self.parent, self.child)

@@ -3,14 +3,20 @@ from django.conf import settings
 from django.shortcuts import redirect
 
 from django.utils.translation import ugettext as _
+from django.utils.importlib import import_module
 
 from . import errors
-from . import middleware
 from . import models
 
-from . import get_consumer
-
 NAMESPACE_SESSION_KEY = '_auth_namespace'
+
+
+def get_consumer(namespace=None):
+    params = settings.AUTHS.get(namespace or 'default')
+    name = params.get('app', namespace)
+    module = import_module(name)
+    creds = params.get('creds', {})
+    return module.models.Consumer(**creds)
 
 #XXX Callback url should be configurable
 def build_callback_url(request):
@@ -34,7 +40,8 @@ def connect(request, callback_url=None, namespace=None):
     request.session[NAMESPACE_SESSION_KEY] = namespace
     if callback_url is None:
         callback_url = build_callback_url(request)
-    redirect_url = request.provider.auth_request(request, callback_url)
+    consumer = get_consumer(namespace)
+    redirect_url = consumer.provider.auth_request(request, callback_url)
     return redirect(redirect_url)
 
 
@@ -67,7 +74,7 @@ def callback(request):
 
     auth.login(request, _user)
 
-    return redirect(settings.DOMAIN)
+    return redirect('/')
 
 
 def disconnect(request, namespace=None):
@@ -85,4 +92,4 @@ def disconnect(request, namespace=None):
     else:
         auth.logout(request)
 
-    return redirect(settings.DOMAIN)
+    return redirect('/')

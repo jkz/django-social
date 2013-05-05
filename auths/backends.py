@@ -24,13 +24,17 @@ class AccountBackend(ModelBackend):
     Base class for Account authentication backend. This allows multiple
     account sources to authenticate to a single user.
     """
-    def authenticate(self, child, parent=None):
+    def authenticate(self, child, parent):
         """Return the user's parent and else a new one"""
         try:
             account = models.Account.objects.get_for_child(child)
         except models.Account.DoesNotExist:
-            account = models.Account.objects.create(parent=parent, child=child)
+            params = {'child': child}
+            if parent.is_authenticated():
+                params['parent'] = parent
+            account = models.Account.objects.create(**params)
         else:
-            if parent and not parent == account.parent:
+            if parent.is_authenticated() and parent != account.parent:
                 raise errors.AuthConflict(
                         _("Account already bound to another User"))
+        return account.parent
