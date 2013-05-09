@@ -15,7 +15,7 @@ class UserBackend(ModelBackend):
         Just passes the given user. This backend exists as a complement to the
         AccountBackend.
         """
-        if user and user.is_authenticated():
+        if user.is_authenticated():
             return user
 
 

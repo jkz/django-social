@@ -25,6 +25,12 @@ class User(auth.AbstractBaseUser):
     def get_account(self, namespace):
         return self.account_set.get(content_type__app_label=namespace)
 
+    def connected_namespaces(self):
+        return self.account_set.values_list('content_type__app_label', flat=True)
+
+    def unconnected_namespaces(self):
+        return list(set(settings.AUTHS.keys()) - set(self.connected_namespaces()))
+
 
 class AccountManager(m.Manager):
     def get_for_child(self, child):
@@ -35,13 +41,16 @@ class AccountManager(m.Manager):
 class Account(m.Model):
     parent = m.ForeignKey(User, default=User.objects.create_user)
     content_type = m.ForeignKey(ContentType)
-    object_id = m.PositiveIntegerField()
+    object_id = m.TextField()
     child = generic.GenericForeignKey('content_type', 'object_id')
 
     objects = AccountManager()
 
     class Meta:
         unique_together = [('content_type', 'object_id'), ('content_type', 'parent')]
+
+    def namespace(self):
+        return self.content_type.app_label
 
     def __str__(self):
         return '{} as {}'.format(self.parent, self.child)
