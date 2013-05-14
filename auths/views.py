@@ -8,15 +8,10 @@ from django.utils.importlib import import_module
 from . import errors
 from . import models
 
+from . import get_consumer
+
 NAMESPACE_SESSION_KEY = '_auth_namespace'
 
-
-def get_consumer(namespace=None):
-    params = settings.AUTHS.get(namespace or 'default')
-    name = params.get('app', namespace)
-    module = import_module(name)
-    creds = params.get('creds', {})
-    return module.models.Consumer(**creds)
 
 #XXX Callback url should be configurable
 def build_callback_url(request):

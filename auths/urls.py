@@ -6,6 +6,7 @@ from . import views as v
 
 urlpatterns = patterns('',
     url(r'^connect/$', v.connect, name='auth_request'),
+    #XXX something pretty would be nice
     url(r'^connect/callback/$', v.callback, name='auth_callback'),
     url(r'^disconnect/$', v.disconnect, name='auth_disconnect'),
 )

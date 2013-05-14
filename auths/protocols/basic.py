@@ -2,11 +2,11 @@ from django.db import models as m
 from django.utils.translation import ugettext as _
 import django.contrib.auth.models as auth
 
-from authlib import basic
+from www.auth import basic
 
 from auths import errors
 
-class Provider(basic.Provider):
+class Provider(basic.Provider, auths.Provider):
     def auth_request(self, request, callback_url):
         return self.get_redirect_url(callback_url=callback_url)
 
@@ -20,7 +20,7 @@ class Provider(basic.Provider):
         return request.GET
 
 
-class Consumer(basic.Consumer):
+class Consumer(basic.Consumer, auths.Consumer):
     provider = Provider()
 
     def get_user(self, username, password=None):

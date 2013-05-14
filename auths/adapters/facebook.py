@@ -11,36 +11,10 @@ from utils.fields import DefaultTextField
 
 from .objects import User
 
+ACTIVE = 'social.providers.facebook' in settings.INSTALLED_APPS
+
 STATE_SESSION_KEY = '_facebook_oauth2_state'
 CALLBACK_SESSION_KEY = '_facebook_oauth2_callback_url'
-
-'''
-class Provider(oauth2.App, facebook.App):
-    name = 'Facebook'
-
-    #namespace = DefaultTextField()
-    description = DefaultTextField()
-    website = DefaultTextField()
-
-    icon = DefaultTextField()
-
-    email_support = DefaultTextField()
-    email_contact = DefaultTextField()
-
-    deauthorize_callback_url = DefaultTextField()
-
-    organization_name = DefaultTextField()
-    organization_website = DefaultTextField()
-
-    users = m.ManyToManyField(User, through='Token', related_name='apps')
-
-    class Meta:
-        app_label = 'facebook'
-
-    def __unicode__(self):
-        return 'facebook_app(%s)' % self.pk
-'''
-
 
 class Provider(facebook.Provider, oauth2.Provider):
     def auth_request(self, request, callback_url):
@@ -75,8 +49,6 @@ class Provider(facebook.Provider, oauth2.Provider):
 
 
 class Consumer(facebook.Consumer):
-    Provider = Provider
-
     def get_user(self, access_token, expires):
         token = Token(key=access_token, expires=expires, activated=True)
         token.consumer = self
@@ -88,17 +60,23 @@ class Consumer(facebook.Consumer):
         token.save()
         return user
 
-    def get_token(self, user):
-        return User.token
+    def get_token(self, uid):
+        return Token.objects.get(user_id=uid)
 
 
 class Token(oauth2.AbstractToken):
-    user = m.OneToOneField(User, null=True)
+    provider = 'facebook'
+
     expires = m.IntegerField()
     activated = m.BooleanField(default=False)
 
-    class Meta:
-        app_label = 'facebook'
+    if ACTIVE:
+        user = m.OneToOneField(facebook.User, null=True)
+
+        class Meta:
+            app_label = 'facebook'
+    else:
+        user_id = m.TextField(unique=True)
 
 
 User.AVATAR_URL = property(lambda self: self.picture or

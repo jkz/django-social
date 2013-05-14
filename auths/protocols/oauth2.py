@@ -1,9 +1,7 @@
-# Make this module a wrapper around authlib.oauth2
-from authlib.oauth2 import *
-
 import django.db.models as m
 
-from authlib import oauth2
+from www import auth
+from www.auth import oauth2
 
 class AbstractToken(m.Model, oauth2.TokenInterface):
     key = m.TextField(primary_key=True)
@@ -20,9 +18,6 @@ class AbstractConsumer(m.Model, oauth2.ConsumerInterface):
 
     class Meta:
         abstract = True
-
-    def auth_process(self, **creds):
-        return creds
 
 
 class Provider(oauth2.Provider):

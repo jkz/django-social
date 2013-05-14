@@ -1,12 +1,13 @@
 # Make this module act as a wrapper around authlib.oauth
-from authlib.oauth import *
+from www.auth.oauth import *
 
 import django.db.models as m
 from django.utils.translation import ugettext as _
 
-import authlib.oauth as oauth
+from www import auth
+from www.auth import oauth
 
-class AbstractToken(m.Model, oauth.TokenInterface):
+class AbstractToken(m.Model, oauth.Token):
     """
     Represents an end user of an auhtenticating service.
     """
@@ -16,22 +17,13 @@ class AbstractToken(m.Model, oauth.TokenInterface):
 
     class Meta:
         abstract = True
-        unique_together = [('user', 'app')]
 
     def to_dict(self):
         return {'oauth_token': self.key,
                 'oauth_token_secret': self.secret}
 
 
-class AbstractConsumer(m.Model, oauth.ConsumerInterface):
-    key = m.TextField(primary_key=True)
-    secret = m.TextField()
-
-    class Meta:
-        abstract = True
-
-
-class Provider(oauth.Provider):
+class Service(auth.Service):
     def _secret_session_key(self):
         return '{}_oauth_secret_session_key'.format(self.host)
 
