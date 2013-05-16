@@ -15,8 +15,8 @@ urlpatterns = patterns('',
         name='auth_disconnect'),
 )
 
-if settings.USE_AUTH_ACCOUNT:
-    providers = '|'.join(settings.AUTHS.keys())
+if settings.USE_ACCOUNTS:
+    providers = '|'.join(settings.PROVIDERS.keys())
 
     urlpatterns += url(r'^{}/(?P<provider>{})/$'.format(
         settings.LOGIN_URL.strip('/'), providers),

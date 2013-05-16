@@ -8,19 +8,6 @@ from django.utils.translation import ugettext as _
 
 
 # Default settings
-
-settings.AUTHS = getattr(settings, 'AUTHS', {})
-
-if not hasattr(settings, 'AUTH_DEFAULT_PROVIDER'):
-    # Use first key in AUTHS as default provider
-    #
-    # Heads up! This is undeterministic behaviour with multiple keys
-    try:
-        settings.AUTH_DEFAULT_PROVIDER = AUTHS.keys()[0]
-    except IndexError:
-        raise Exception(_("No auth provider specified"))
-
-
 settings.LOGIN_URL = getattr(settings, 'LOGIN_URL', '/connect/')
 settings.LOGOUT_URL = getattr(settings, 'LOGOUT_URL', '/disconnect/')
 settings.LOGIN_CALLBACK_URL = getattr(settings, 'LOGIN_CALLBACK_URL', '/connected/')

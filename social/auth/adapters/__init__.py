@@ -23,11 +23,9 @@ def get_adapter(provider=settings.AUTH_DEFAULT_PROVIDER):
     Return an adapter object for given provider with credentials defined
     in settings.
     """
-    params = settings.AUTHS.get(provider, {})
-    try:
-        module = import_module(params['app'])
-    except KeyError:
-        module = import_module('.adapters.' + provider, __name__)
+    params = settings.PROVIDERS.get(provider, {})
+    module = import_module(params.get('app',
+        '{}.adapters.{}'.format(__name__, provider)))
     try:
         creds = params['creds']
     except (KeyError, TypeError):

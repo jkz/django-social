@@ -1,11 +1,9 @@
 social/
     auth/
-        interface.py
-            Consumer
-            Token
-            Service
         protocols/
             # They task is to connect protocols to django
+            __init__.py
+                Protocol
             basic.py
             oauth.py
             oauth2.py
@@ -13,6 +11,8 @@ social/
             # They task is to connect protocols to providers
             # - Bind tokens to facebook users
             #
+            __init__.py
+                Adapter
             facebook.py
             twitter.py
             soundcloud.py

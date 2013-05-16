@@ -69,7 +69,7 @@ def callback(request):
         raise errors.AuthFailure(_("Could not authenticate credentials!"))
 
     # Invoke configured authentication backend
-    if settings.USE_AUTH_ACCOUNT:
+    if settings.USE_ACCOUNTS:
         _user = auth.authenticate(child=user, parent=request.user)
     else:
         _user = auth.authenticate(user=user)
@@ -91,7 +91,7 @@ def disconnect(request, provider=None):
         raise errors.Unauthorized(_("You need to be logged in to do that!"))
 
     # Remove account of given provider from authenticated user
-    if settings.USE_AUTH_ACCOUNT and provider:
+    if settings.USE_ACCOUNTS and provider:
         try:
             request.user.get_account(provider).delete()
         except models.Account.DoesNotExist:
