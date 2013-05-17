@@ -8,15 +8,14 @@ class Protocol:
     """
     def request(self, request, callback_url):
         """
-        Return an url to redirect an authenticates a user to,
-        and redirect back to given callback_url afterwards.
+        Return a url which will initiate the authentication flow. Afterwards,
+        the user should be redirected to the callback_url.
         """
         raise NotImplementedError
 
     def callback(self, request):
         """
-        Return credentials dict (to pass to consumer.get_user) for
-        authenticating user or None.
+        Complete an authentication flow and return the resulting credentials.
         """
         raise NotImplementedError
 

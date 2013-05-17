@@ -1,12 +1,12 @@
 from django.db import models as m
 
-from utils.models import ExternalModel
+from utils.models import ImporterModel, CustomUser
 from utils.fields import (DefaultTextField as DTF, DefaultIntegerField,
         DefaultBooleanField, TimestampField)
 
 DefaultTextField = lambda *a, **kw: DTF(null=True, *a, **kw)
 
-class User(ExternalModel):
+class User(ImporterModel, CustomUser):
     id = m.TextField(primary_key=True)
     permalink = DefaultTextField()
     username = DefaultTextField()
@@ -34,11 +34,16 @@ class User(ExternalModel):
     class Meta:
         app_label = 'soundcloud'
 
-    def __unicode__(self):
+    USERNAME_FIELD = 'id'
+
+    def get_short_name(self):
+        return self.username or self.id
+
+    def __str__(self):
         return self.full_name or self.username or self.id
 
 
-class Track(ExternalModel):
+class Track(ImporterModel):
     id = m.TextField(primary_key=True)
     #created_at = TimestampField()  #m.DateTimeField() #format "2009/08/13 18:30:10 +0000"
     user = m.ForeignKey(User, related_name='tracks', null=True)
@@ -93,10 +98,10 @@ class Track(ExternalModel):
     class Meta:
         app_label = 'soundcloud'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title or unicode(self.id)
 
-class Comment(ExternalModel):
+class Comment(ImporterModel):
     id = m.TextField(primary_key=True)
     #created_at = TimestampField()
     body = DefaultTextField()
@@ -108,6 +113,6 @@ class Comment(ExternalModel):
     class Meta:
         app_label = 'soundcloud'
 
-    def __unicode__(self):
-        return 'Comment by %s on %s' % (unicode(self.user), unicode(self.track))
+    def __str__(self):
+        return 'Comment by {} on {}'.format(self.user, self.track)
 

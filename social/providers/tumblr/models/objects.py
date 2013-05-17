@@ -1,16 +1,19 @@
 from django.db import models as m
 
+from utils.models import ImportModel, CustomUser
 from utils.fields import DefaultTextField
 
 
-class User(m.Model):
+class User(ImportModel, CustomUser):
     name = m.TextField(primary_key=True)
-
-    def __unicode__(self):
-        return self.name or unicode(self.id)
 
     class Meta:
         app_label = 'tumblr'
+
+    def __str__(self):
+        return self.name or str(self.id)
+
+    USERNAME_FIELD = 'name'
 
     def avatar(self, size=64):
         try:
@@ -21,7 +24,7 @@ class User(m.Model):
                 size)
 
 
-class Blog(m.Model):
+class Blog(ImportModel):
     title = DefaultTextField()
     name = m.TextField(primary_key=True)
     url = DefaultTextField()
@@ -31,7 +34,7 @@ class Blog(m.Model):
 
     users = m.ManyToManyField(User, through='Writer', related_name='blogs')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -41,14 +44,14 @@ class Blog(m.Model):
 class Tag(m.Model):
     name = m.TextField(primary_key=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text
 
     class Meta:
         app_label = 'tumblr'
 
 
-class Post(m.Model):
+class Post(ImportModel):
     id = m.BigIntegerField(primary_key=True)
     blog = m.ForeignKey(Blog, related_name='posts')
     post_url = DefaultTextField()
@@ -64,8 +67,8 @@ class Post(m.Model):
 
     tags = m.ManyToManyField(Tag, related_name='posts')
 
-    def __unicode__(self):
-        return '%s %s on %s' % (self.type, self.id, self.blog)
+    def __str__(self):
+        return '{} {} on {}'.format(self.type, self.id, self.blog)
 
     class Meta:
         app_label = 'tumblr'
@@ -75,8 +78,8 @@ class TextPost(Post):
     title = DefaultTextField(null=True)
     body = DefaultTextField()
 
-    def __unicode__(self):
-        return '%s on %s' % (self.title or self.id, self.blog)
+    def __str__(self):
+        return '{} on {}'.format(self.title or self.id, self.blog)
 
     class Meta:
         app_label = 'tumblr'
@@ -86,8 +89,8 @@ class PhotoPost(Post):
     title = DefaultTextField(null=True)
     body = DefaultTextField()
 
-    def __unicode__(self):
-        return '%s on %s' % (self.title or self.id, self.blog)
+    def __str__(self):
+        return '{} on {}'.format(self.title or self.id, self.blog)
 
     class Meta:
         app_label = 'tumblr'
@@ -97,8 +100,8 @@ class Photo(m.Model):
     post = m.ForeignKey(PhotoPost, related_name='photos')
     caption = DefaultTextField()
 
-    def __unicode__(self):
-        return '%s on %s' % (self.caption or 'photo', self.blog)
+    def __str__(self):
+        return '{} on {}'.format(self.caption or 'photo', self.blog)
 
     class Meta:
         app_label = 'tumblr'
@@ -110,8 +113,8 @@ class PhotoSize(m.Model):
     width = m.IntegerField()
     height = m.IntegerField()
 
-    def __unicode__(self):
-        return '%s %sx%s' % (unicode(self.photo), self.width, self.height)
+    def __str__(self):
+        return '{} {}x{}' % (self.photo, self.width, self.height)
 
     class Meta:
         app_label = 'tumblr'

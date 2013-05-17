@@ -1,8 +1,9 @@
+from django.contrib.auth.backends import ModelBackend
+
 class UserBackend(ModelBackend):
     """
-    Base class for User authentication backend. To be used with views for
-    external authentication sources. This backend merely exists to interface
-    the auths framework with Django's.
+    This backend allows non-Django-native authentication flows to tie into the
+    contrib.auth framework.
     """
     def authenticate(self, user):
         """

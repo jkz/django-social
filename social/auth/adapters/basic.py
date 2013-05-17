@@ -1,10 +1,16 @@
 import www.auth
-from ..auth import basic
 
+from ...providers.basic import models
+from .. import protocols
 from . import Adapter
-from ...providers.basic.models import User
 
-class Protocol(Protocol):
+class User(models.User):
+    class Meta:
+        proxy = True
+
+    AVATAR_URL = property(models.User.gravatar)
+
+class Protocol(protocols.Protocol):
     def request(self, request, callback_url):
         #TODO get_redirect_url is not implemented at this moment
         return self.get_redirect_url(callback_url=callback_url)

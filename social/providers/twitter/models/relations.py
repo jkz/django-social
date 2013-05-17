@@ -13,8 +13,8 @@ class Mention(m.Model):
         app_label = 'twitter'
 
 
-    def __unicode__(self):
-        return '%s in %s' % (unicode(self.user), unicode(self.status))
+    def __str__(self):
+        return '{} in {}'.format(self.user, self.status)
 
 
 class HashUse(QuerySetModel):
@@ -26,8 +26,8 @@ class HashUse(QuerySetModel):
         app_label = 'twitter'
 
 
-    def __unicode__(self):
-        return '%s in %s' % (unicode(self.hashtag), unicode(self.status))
+    def __str__(self):
+        return '{} in {}'.format(self.hashtag, self.status)
 
     class QuerySet(RequestQuerySet): pass
 
@@ -37,8 +37,8 @@ class Follow(m.Model):
     source = m.ForeignKey(User, related_name='follows')
     created_at = m.DateTimeField(null=True)
 
-    def __unicode__(self):
-        return '%s by %s' % (unicode(self.target), unicode(self.source))
+    def __str__(self):
+        return '{} by {}'.format(self.target, self.source)
 
     class Meta:
         app_label = 'twitter'
@@ -51,3 +51,5 @@ class Retweet(m.Model):
     class Meta:
         app_label = 'twitter'
 
+    def __str__(self):
+        return '{} RT: {}'.format(self.user, self.status)

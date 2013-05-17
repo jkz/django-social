@@ -11,8 +11,8 @@ class Writer(m.Model):
         app_label = 'tumblr'
         unique_together = [('user', 'blog')]
 
-    def __unicode__(self):
-        return '%s for %s' (unicode(self.user), unicode(self.blog))
+    def __str__(self):
+        return '{} for {}'.format(self.user, self.blog)
 
 class Like(m.Model):
     user = m.ForeignKey(User, related_name='likes')
@@ -21,8 +21,8 @@ class Like(m.Model):
     class Meta:
         app_label = 'tumblr'
 
-    def __unicode__(self):
-        return '%s likes %s' % (unicode(self.user), unicode(self.post))
+    def __str__(self):
+        return '{} likes {}'.format(self.user, self.post)
 
 class TagUse(m.Model):
     tag = m.ForeignKey(Tag, related_name='uses')
@@ -30,8 +30,8 @@ class TagUse(m.Model):
     class Meta:
         app_label = 'tumblr'
 
-    def __unicode__(self):
-        return '%s uses %s' % (unicode(self.user), unicode(self.tag))
+    def __str__(self):
+        return '{} uses {}'.format(self.user, self.tag)
 
 class Reblog(m.Model):
     user = m.ForeignKey(User, related_name='reblogs')
@@ -40,6 +40,6 @@ class Reblog(m.Model):
     class Meta:
         app_label = 'tumblr'
 
-    def __unicode__(self):
-        return '%s reblogs %s' % (unicode(self.user), unicode(self.post))
+    def __str__(self):
+        return '{} reblogs {}'.format(self.user, self.post)
 

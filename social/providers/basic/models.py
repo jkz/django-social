@@ -33,7 +33,7 @@ class User(auth.AbstractBaseUser):
 
     objects = UserManager()
 
-    def AVATAR_URL(self):
+    def gravatar(self):
         #TODO move this to a gravatar module, perhaps into utils?
         if self.email:
             md5 = hashlib.md5(self.email.lower()).hexdigest()

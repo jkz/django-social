@@ -6,6 +6,8 @@ from ...providers.twitter import User
 from ..protocols import oauth
 from . import Adapter
 
+CREDS = settings.PROVIDERS['twitter']['creds']
+
 class User(User):
     class Meta:
         proxy = True
@@ -17,6 +19,8 @@ class User(User):
 
 class Adapter(Adapter):
     def __init__(self, **creds):
+        if not creds:
+            creds = settings.PROVIDERS['twitter']['creds']
         self.consumer = twitter.Consumer(**creds)
         authority = self.consumer.authority()
         self.protocol = oauth.protocol(authority=authority)

@@ -12,14 +12,12 @@ def realtime_callback(request, verify_token):
     hub.challenge
     hub.verify_token
     """
-    print 'calling back'
     if request.method == 'GET':
         if (verify_token == request.GET.get('hub.verify_token', None)
         and request.GET.get('hub.mode', None)):
             return HttpResponse(request.GET.get('hub.challenge', None))
         return HttpResponse('')
     elif request.method =='POST':
-        print 'POST'
         #TODO: verify sha1 signature
         #meta.HTTP_X_HUB_SIGNATURE
         try:

@@ -53,10 +53,14 @@ class User(Object, AbstractBaseUser):
     class Meta:
         app_label = 'facebook'
 
-    @property
-    def full_name(self):
-        return '%s %s %s' % (self.first_name, self.middle_name, self.last_name)
+    def get_full_name(self):
+        return ' '.join(getattr(self, attr)
+                        for attr in ('first_name', 'middle_name', 'last_name')
+                        if getattr(self, attr, False))
 
-    def __unicode__(self):
-        return self.full_name or self.name or self.username or self.pk
+    def get_short_name(self):
+        return self.first_name or self.username or self.pk
+
+    def __str__(self):
+        return self.get_full_name() or self.name or self.username or self.pk
 

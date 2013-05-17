@@ -32,6 +32,28 @@ Installation
 
   MIDDLEWARE_CLASSES += ('auths.middleware.AuthMiddleware',)
 
+Protocols & Adapters
+--------------------
+`protocols.Protocol` provides an interface for (third party) authorization
+sources. It specifies the authentication flow with two methods:
+
+`request(request, callback_url)`
+
+This returns a url which will initiate the authentication flow. Afterwards, the
+user should be redirected to the callback_url.
+
+`callback(request)`
+
+Completes the authentication flow and returns a dictionary with the resulting
+credentials.
+
+`adapters.Adapter` provides an interface for turning credentials into a user
+object of its associated service provider.
+
+`authenticate(\*\*creds)`
+
+Returns a User object authenticated by given credentials.
+
 Users
 -----
 
@@ -85,7 +107,8 @@ one user account for each of them to a single user.
 
 Views
 -----
-`social.auth.views` has three views which can be used both as views as well as authentication functions.
+`social.auth.views` has three views which can be used both as views as well as
+session manipulation functions.
 
 `connect(request, callback_url=None, provider=settings.AUTH_DEFAULT_PROVIDER)`
 Return a redirect url which will initialize an authentication request. The
@@ -102,19 +125,15 @@ Remove an authenticated user from the session or disconnect an account from it i
 
 Urls
 ----
-Auths uses four urls which should be configured in the settings. The view
-functions are all useable
+Auths uses four urls which should be configured in the settings.
 
   # settings.py
 
   # These are the default values
   LOGIN_URL = '/connect/'
   LOGOUT_URL = '/disconnect/'
-  LOGIN_CALLBACK_URL = '/connected/'
+  LOGIN_CALLBACK_URL = '/callback/'
   LOGIN_REDIRECT_URL = '/'
-
-  INSTALLED_APPS += ('social.facebook', 'social.twitter', 'social.googleplus')
-
 
 Providers
 ---------

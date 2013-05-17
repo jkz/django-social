@@ -1,10 +1,11 @@
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models as m
 
+from utils.models import CustomUser
 from utils.fields import NullTextField, TimestampField
 
 
-class User(AbstractBaseUser):
+class User(CustomUser):
     USERNAME_FIELD = 'id'
 
     """Twitter user infomation"""
@@ -34,7 +35,7 @@ class User(AbstractBaseUser):
     utc_offset = m.IntegerField(null=True)
     """
 
-    def __unicode__(self):
+    def __str__(self):
         return ((self.screen_name and '@%s' % self.screen_name)
                 or self.name
                 or unicode(self.id))
@@ -46,8 +47,8 @@ class User(AbstractBaseUser):
 class Hashtag(m.Model):
     text = m.TextField(primary_key=True)
 
-    def __unicode__(self):
-        return '#%s' % self.text
+    def __str__(self):
+        return '#{}'format(self.text)
 
     class Meta:
         app_label = 'twitter'
@@ -81,7 +82,7 @@ class Status(m.Model):
     """
 
     def __unicode__(self):
-        return '%s: %s' % (unicode(self.user), self.text)  #TODO: perhaps [:40])
+        return '{}: {}'.format(self.user, self.text)  #TODO: perhaps [:40])
 
     class Meta:
         app_label = 'twitter'
