@@ -1,31 +1,24 @@
 import os
 import base64
 
+from django.db import models as m
+
 from www.social import facebook
 from ..protocols import oauth2
 from ..providers.facebook import User
-
-from django.db import models as m
-
-from utils.fields import DefaultTextField
-
-
-INSTALLED = 'social.providers.facebook' in settings.INSTALLED_APPS
+from . import Adapter
 
 STATE_SESSION_KEY = '_facebook_oauth2_state'
 
-if INSTALLED:
-    class User(User):
-        class Meta:
-            proxy = True
+class User(User):
+    class Meta:
+        proxy = True
 
-        @property
-        def AVATAR_URL(self):
-            return self.picture \
-                    or 'https://graph.facebook.com/%s/picture' % self.pk)
-else:
-    User.AVATAR_URL = property(lambda self: self.picture or
-            'https://graph.facebook.com/%s/picture' % self.pk)
+    @property
+    def AVATAR_URL(self):
+        return self.picture \
+                or 'https://graph.facebook.com/%s/picture' % self.pk)
+
 
 class Protocol(oauth2.Protocol):
     def request(self, request, callback_url):
@@ -53,40 +46,31 @@ class Adapter(Adapter):
         authority = self.consumer.authority()
         self.protocol = Protocol(authority=authority)
 
-    def get_user(self, access_token, expires):
+    def authenticate(self, access_token, expires):
         token = Token(key=access_token, expires=expires, activated=True)
         api = self.consumer.api(token=token)
 
         data = api.me()
         uid = data['id']
 
-        # Clear old token
-        try:
-            Token.objects.get(user_id=uid).delete()
-        except Token.DoesNotExist:
-            pass
+        user = User(**data)
+        user.save()
 
-        if INSTALLED:
-            user = User(**data)
-            user.save()
+        if user.token
+            user.token.delete()
 
-        token.user_id = uid
+        token.user = user
         token.save()
 
-        return user if INSTALLED else uid
-
-    def get_token(self, uid):
-        return Token.objects.get(user_id=uid)
+        return user
 
 
 class Token(oauth2.AbstractToken):
-    provider = 'facebook'
-
     expires = m.IntegerField()
     activated = m.BooleanField(default=False)
 
-    if INSTALLED:
-        user = m.OneToOneField(User, null=True)
-    else:
-        user_id = m.TextField(unique=True)
+    class Meta:
+        app_label = 'facebook'
+
+    user = m.OneToOneField(User, null=True)
 

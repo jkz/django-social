@@ -5,18 +5,10 @@ from www.auth import oauth2
 
 from . import Protocol
 
-class AbstractToken(m.Model, oauth2.TokenInterface):
+class Token(m.Model):
     key = m.TextField(primary_key=True)
     #created_time = m.DateTimeField()
     last_modified = m.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-
-class AbstractConsumer(m.Model, oauth2.ConsumerInterface):
-    key = m.TextField(primary_key=True)
-    secret = m.TextField()
 
     class Meta:
         abstract = True

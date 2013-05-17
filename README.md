@@ -58,14 +58,17 @@ one user account for each of them to a single user.
   #settings.py
   AUTHENTICATION_BACKENDS += ('auths.backends.AccountBackend',)
 
-  AUTHS = {
+  PROVIDERS = {
     'facebook': {
       'creds': {
         'key': 'YOURAPPKEY',
         'secret': 'YOURAPPSECRET',
       }
     }
-    'twitter': {
+    'soundcloud': {
+      'auth_params': {
+        'display': 'window',
+      },
       'creds': {
         'key': 'YOURAPPKEY',
         'secret': 'YOURAPPSECRET',
@@ -112,3 +115,8 @@ functions are all useable
 
   INSTALLED_APPS += ('social.facebook', 'social.twitter', 'social.googleplus')
 
+
+Providers
+---------
+Auths comes with a slew of service providers, which provide models, parsers and tasks
+to interact with their services.

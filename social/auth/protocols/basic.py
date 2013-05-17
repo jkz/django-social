@@ -2,10 +2,7 @@ from django.db import models as m
 from django.utils.translation import ugettext as _
 import django.contrib.auth.models as auth
 
-import www.auth
-from www.auth import basic
-
-from auths import errors
+from .. import errors
 
 from . import Protocol
 

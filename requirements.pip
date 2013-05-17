@@ -1,4 +1,4 @@
-Django==1.4.1
+Django==1.5
 django-celery
 
--e git+https://github.com/jessethegame/python-authlib.git#egg=authlib
+-e git+https://github.com/jessethegame/python-www.git#egg=ww

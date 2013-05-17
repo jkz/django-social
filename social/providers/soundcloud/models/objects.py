@@ -20,7 +20,6 @@ class User(ExternalModel):
     discogs = DefaultTextField()
     myspace = DefaultTextField()
     website = DefaultTextField()
-    website = DefaultTextField()
     #online = BooleanField()
     track_count = DefaultIntegerField()
     playlist_count = DefaultIntegerField()
