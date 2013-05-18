@@ -18,7 +18,7 @@ class User(User):
 
 
 class Adapter(Adapter):
-    def __init__(self, **creds):
+    def init(self, **creds):
         if not creds:
             creds = settings.PROVIDERS['twitter']['creds']
         self.consumer = twitter.Consumer(**creds)

@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from django.utils.translation import ugettext as _
 
 from . import models
 from . import errors
+from . import adapters
 
 class UserBackend(ModelBackend):
     """
@@ -16,3 +18,6 @@ class UserBackend(ModelBackend):
         if user.is_authenticated():
             return user
 
+# Add an authentication
+for provider in settings.PROVIDERS:
+    globals()[provider] = adapters.get_adapter(provider)

@@ -19,7 +19,7 @@ class User(User):
 
 
 class Protocol(protocols.Protocol):
-    def __init__(self, authority):
+    def init(self, authority):
         self.authority = authority
 
     def request(self, request, redirect_uri, **kwargs):

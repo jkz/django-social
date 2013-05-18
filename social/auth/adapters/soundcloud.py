@@ -24,7 +24,7 @@ class Protocol(oauth2.Protocol):
 
 
 class Adapter(Adapter):
-    def __init__(self, **creds):
+    def init(self, **creds):
         self.consumer = soundcloud.Consumer(**creds)
         authority = self.consumer.authority()
         self.protocol = Protocol(authority=authority)

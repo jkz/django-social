@@ -16,7 +16,7 @@ class User(User):
 
 
 class Adapter(Adapter):
-    def __init__(self, **creds):
+    def init(self, **creds):
         self.consumer = tumblr.Consumer(**creds)
         authority = self.consumer.authority()
         self.protocol = oauth.protocol(authority=authority)
