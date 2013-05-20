@@ -2,12 +2,20 @@ from django.db import models as m
 
 from www.social import soundcloud
 from ..protocols import oauth2
-from ..providers.soundcloud import User
-from . import Adapter
+from ..providers.soundcloud import models
+from . import Backend
 
 from django.conf import settings
 
 PARAMS = PROVIDERS.get('soundcloud', {}).get('auth_params', {})
+
+class User(models.User):
+    class Meta:
+        proxy = True
+
+    @property
+    def AVATAR_URL(self):
+        return self.avatar_url
 
 if not 'display' in PARAMS:
     PARAMS['display'] = 'popup'
@@ -23,7 +31,7 @@ class Protocol(oauth2.Protocol):
         return super().request(request, **params)
 
 
-class Adapter(Adapter):
+class Backend(Backend):
     def init(self, **creds):
         self.consumer = soundcloud.Consumer(**creds)
         authority = self.consumer.authority()
@@ -52,11 +60,3 @@ class Token(oauth2.AbstractToken):
     class Meta:
         app_label = 'soundcloud'
 
-
-class User(User):
-    class Meta:
-        proxy = True
-
-    @property
-    def AVATAR_URL(self):
-        return self.avatar_url

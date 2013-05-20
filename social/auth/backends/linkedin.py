@@ -4,7 +4,7 @@ from www.social import linkedin
 
 from ...providers.linkedin import parsers, User
 from ..protocols import oauth
-from . import Adapter
+from . import Backend
 
 class User(Profile):
     class Meta:
@@ -15,7 +15,7 @@ class User(Profile):
         return self.pictureUrl
 
 
-class Adapter(Adapter):
+class Backend(Backend):
     def init(self, **creds):
         self.consumer = linkedin.Consumer(**creds)
         authority = self.consumer.authority()

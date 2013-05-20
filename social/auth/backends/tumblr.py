@@ -2,11 +2,11 @@ from django.db import models as m
 
 from www.social import tumblr
 
-from ...providers.tumblr import parsers, User
+from ...providers.tumblr import parsers, models
 from ..protocols import oauth
-from . import Adapter
+from . import Backend
 
-class User(User):
+class User(models.User):
     class Meta:
         proxy = True
 
@@ -15,7 +15,7 @@ class User(User):
         return self.avatar
 
 
-class Adapter(Adapter):
+class Backend(Backend):
     def init(self, **creds):
         self.consumer = tumblr.Consumer(**creds)
         authority = self.consumer.authority()

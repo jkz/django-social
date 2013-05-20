@@ -5,12 +5,12 @@ from django.db import models as m
 
 from www.social import facebook
 from ..protocols import oauth2
-from ..providers.facebook import User
-from . import Adapter
+from ..providers.facebook import models
+from . import Backend
 
 STATE_SESSION_KEY = '_facebook_oauth2_state'
 
-class User(User):
+class User(models.User):
     class Meta:
         proxy = True
 
@@ -40,7 +40,7 @@ class Protocol(oauth2.Protocol):
         return super().callback(request)
 
 
-class Adapter(Adapter):
+class Backend(Backend):
     def init(self, **creds):
         self.consumer = facebook.Consumer(**creds)
         authority = self.consumer.authority()

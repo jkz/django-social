@@ -1,6 +1,7 @@
 """
 This package contains authentications protocols.
 """
+from django.contrib import auth
 
 class Protocol:
     """
@@ -19,3 +20,8 @@ class Protocol:
         """
         raise NotImplementedError
 
+    def logout(self, request):
+        """
+        Override this for alternative logout mechanisms
+        """
+        auth.logout(request)

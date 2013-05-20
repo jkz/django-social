@@ -3,10 +3,11 @@ from django.db import models as m
 from utils.fields import DefaultTextField
 
 from www.social import lastfm
-from ...providers.lastfm import User
+from ...providers.lastfm import models
 from .. import protocols
+from . import Backend
 
-class User(User):
+class User(models.User):
     class Meta:
         proxy = True
 
@@ -30,8 +31,8 @@ class Protocol(protocols.Protocol):
         return self.authority.auth_callback(token=token, **kwargs)
 
 
-class Adapter(Adapter):
-    def __init__(self, **creds):
+class Backend(Backend):
+    def init(self, **creds):
         self.consumer = lastfm.Consumer(**creds)
         authority = lastfm.API(consumer=consumer)
         self.protocol = Protocol(authority=authority)

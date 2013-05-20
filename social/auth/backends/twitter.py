@@ -2,13 +2,13 @@ from django.db import models as m
 
 from www.social import twitter
 
-from ...providers.twitter import User
+from ...providers.twitter import models
 from ..protocols import oauth
-from . import Adapter
+from . import Backend
 
 CREDS = settings.PROVIDERS['twitter']['creds']
 
-class User(User):
+class User(models.User):
     class Meta:
         proxy = True
 
@@ -17,10 +17,8 @@ class User(User):
         return 'http://api.twitter.com/1/users/profile_image/{}?size=bigger'.format(self.pk)
 
 
-class Adapter(Adapter):
+class Backend(Backend):
     def init(self, **creds):
-        if not creds:
-            creds = settings.PROVIDERS['twitter']['creds']
         self.consumer = twitter.Consumer(**creds)
         authority = self.consumer.authority()
         self.protocol = oauth.protocol(authority=authority)

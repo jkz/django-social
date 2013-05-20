@@ -32,7 +32,7 @@ Installation
 
   MIDDLEWARE_CLASSES += ('auths.middleware.AuthMiddleware',)
 
-Protocols & Adapters
+Protocols & Backends
 --------------------
 `protocols.Protocol` provides an interface for (third party) authorization
 sources. It specifies the authentication flow with two methods:
@@ -47,23 +47,31 @@ user should be redirected to the callback_url.
 Completes the authentication flow and returns a dictionary with the resulting
 credentials.
 
-`adapters.Adapter` provides an interface for turning credentials into a user
+`logout(request)`
+
+Defaults to Djangos native logout mechanism but allows alternatives by
+overriding this method.
+
+`backends.Backend` provides an interface for turning credentials into a user
 object of its associated service provider.
 
 `authenticate(\*\*creds)`
 
 Returns a User object authenticated by given credentials.
 
-Users
------
+`get_user(self, pk)`
 
-For a single authentication provider, you can use the UserBackend. Specify the
-provider credentials
+Returns an instance of the User model found in the module of the backend.
+
+Configuration
+-----
+For a single source of authentication, add the desired backend and provider
+credentials to settings.
 
   #settings.py
-  AUTHENTICATION_BACKENDS += ('auths.backends.UserBackend',)
+  AUTHENTICATION_BACKENDS += ('auths.backends.facebook.Backend',)
 
-  AUTHS = {
+  PROVIDERS = {
     'facebook': {
       'key': 'YOURAPPKEY',
       'secret': 'YOURAPPSECRET',
@@ -78,7 +86,7 @@ means that you can plug in as many providers as you like and have users connect
 one user account for each of them to a single user.
 
   #settings.py
-  AUTHENTICATION_BACKENDS += ('auths.backends.AccountBackend',)
+  AUTHENTICATION_BACKENDS += ('auths.backends.accounts.Backend',)
 
   PROVIDERS = {
     'facebook': {
@@ -120,7 +128,7 @@ stored in the session. On success, connects the user or the composite user to
 the session. Returns a redirect to `request.GET['next']` if present, else `settings.LOGIN_REDIRECT_URL`.
 
 `disconnect(request, provider=None)`
-Remove an authenticated user from the session or disconnect an account from it if provider is given.
+Calls the logout method of the given or active provider protocol.
 
 
 Urls
@@ -134,6 +142,7 @@ Auths uses four urls which should be configured in the settings.
   LOGOUT_URL = '/disconnect/'
   LOGIN_CALLBACK_URL = '/callback/'
   LOGIN_REDIRECT_URL = '/'
+
 
 Providers
 ---------

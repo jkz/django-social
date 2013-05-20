@@ -23,7 +23,7 @@ class Protocol(protocols.Protocol):
         return {'session_key': request.session.session_key}
 
 
-class Adapter(Adapter):
+class Backend(Backend):
     protocol = Protocol()
 
     def authenticate(self, session_key):
