@@ -1,3 +1,4 @@
+from django.db import models as m
 from .objects import Object, User
 
 class Like(m.Model):
