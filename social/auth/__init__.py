@@ -1,8 +1,6 @@
 """
 Provides the means for 3rd party authentication.
 """
-from .views import connect, callback, disconnect
-
 from django.conf import settings as s
 from django.utils.translation import ugettext as _
 
