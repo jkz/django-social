@@ -16,8 +16,8 @@ class User(models.User):
 
     @property
     def AVATAR_URL(self):
-        return self.picture \
-                or 'https://graph.facebook.com/%s/picture' % self.pk)
+        return (self.picture
+                or 'https://graph.facebook.com/{}/picture'.format(self.pk))
 
 
 class Protocol(oauth2.Protocol):
@@ -56,7 +56,7 @@ class Backend(Backend):
         user = User(**data)
         user.save()
 
-        if user.token
+        if user.token:
             user.token.delete()
 
         token.user = user
