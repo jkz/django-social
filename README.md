@@ -5,61 +5,65 @@ Several third party backends are included.
 Installation
 ------------
 
-  #settings.py
+      #settings.py
 
-  # When more than one service is specified, multiple accounts can be connected
-  # to a single composite user.
-  AUTHS = {
-    'facebook': {
-      'app': 'social.facebook',
-      'creds': {
-        'key': 'YOURAPPKEY',
-        'secret': 'YOURAPPSECRET',
-    }
-    'twitter': {
-      'app': 'social.twitter',
-      'creds': {
-        'key': 'YOURAPPKEY',
-        'secret': 'YOURAPPSECRET',
-    }
-    'googleplus': {
-      'app': 'social.googleplus',
-      'creds': {
-        'key': 'YOURAPPKEY',
-        'secret': 'YOURAPPSECRET',
-    }
-  }
+      # When more than one service is specified, multiple accounts can be connected
+      # to a single composite user.
+      AUTHS = {
+        'facebook': {
+          'app': 'social.facebook',
+          'creds': {
+            'key': 'YOURAPPKEY',
+            'secret': 'YOURAPPSECRET',
+        }
+        'twitter': {
+          'app': 'social.twitter',
+          'creds': {
+            'key': 'YOURAPPKEY',
+            'secret': 'YOURAPPSECRET',
+        }
+        'googleplus': {
+          'app': 'social.googleplus',
+          'creds': {
+            'key': 'YOURAPPKEY',
+            'secret': 'YOURAPPSECRET',
+        }
+      }
 
-  MIDDLEWARE_CLASSES += ('auths.middleware.AuthMiddleware',)
+      MIDDLEWARE_CLASSES += ('auths.middleware.AuthMiddleware',)
 
 Protocols & Backends
 --------------------
-`protocols.Protocol` provides an interface for (third party) authorization
+    protocols.Protocol
+
+Provides an interface for (third party) authorization
 sources. It specifies the authentication flow with two methods:
 
-`request(request, callback_url)`
+    request(request, callback_url)
 
 This returns a url which will initiate the authentication flow. Afterwards, the
 user should be redirected to the callback_url.
 
-`callback(request)`
+    callback(request)
 
 Completes the authentication flow and returns a dictionary with the resulting
 credentials.
 
-`logout(request)`
+    logout(request)
 
 Defaults to Djangos native logout mechanism but allows alternatives by
 overriding this method.
 
-`backends.Backend` provides an interface for turning credentials into a user
+    backends.Backend
+
+Provides an interface for turning credentials into a user
 object of its associated service provider.
 
-`authenticate(\*\*creds)`
+    authenticate(\*\*creds)
 
 Returns a User object authenticated by given credentials.
 
-`get_user(self, pk)`
+    `get_user(self, pk)`
 
 Returns an instance of the User model found in the module of the backend.
 
@@ -68,15 +72,15 @@ Configuration
 For a single source of authentication, add the desired backend and provider
 credentials to settings.
 
-  #settings.py
-  AUTHENTICATION_BACKENDS += ('auths.backends.facebook.Backend',)
+    #settings.py
+    AUTHENTICATION_BACKENDS += ('auths.backends.facebook.Backend',)
 
-  PROVIDERS = {
-    'facebook': {
-      'key': 'YOURAPPKEY',
-      'secret': 'YOURAPPSECRET',
+    PROVIDERS = {
+      'facebook': {
+        'key': 'YOURAPPKEY',
+        'secret': 'YOURAPPSECRET',
+      }
     }
-  }
 
 Accounts
 --------
@@ -85,33 +89,33 @@ Social auth provides accounts to enable composite user authentication. This
 means that you can plug in as many providers as you like and have users connect
 one user account for each of them to a single user.
 
-  #settings.py
-  AUTHENTICATION_BACKENDS += ('auths.backends.accounts.Backend',)
+    #settings.py
+    AUTHENTICATION_BACKENDS += ('auths.backends.accounts.Backend',)
 
-  PROVIDERS = {
-    'facebook': {
-      'creds': {
-        'key': 'YOURAPPKEY',
-        'secret': 'YOURAPPSECRET',
+    PROVIDERS = {
+      'facebook': {
+        'creds': {
+          'key': 'YOURAPPKEY',
+          'secret': 'YOURAPPSECRET',
+        }
+      }
+      'soundcloud': {
+        'auth_params': {
+          'display': 'window',
+        },
+        'creds': {
+          'key': 'YOURAPPKEY',
+          'secret': 'YOURAPPSECRET',
+        }
+      }
+      'googleplus': {
+        'app': 'myown.googleplus',
+        'creds': {
+          'key': 'YOURAPPKEY',
+          'secret': 'YOURAPPSECRET',
+        }
       }
     }
-    'soundcloud': {
-      'auth_params': {
-        'display': 'window',
-      },
-      'creds': {
-        'key': 'YOURAPPKEY',
-        'secret': 'YOURAPPSECRET',
-      }
-    }
-    'googleplus': {
-      'app': 'myown.googleplus',
-      'creds': {
-        'key': 'YOURAPPKEY',
-        'secret': 'YOURAPPSECRET',
-      }
-    }
-  }
 
 Views
 -----
@@ -135,13 +139,13 @@ Urls
 ----
 Auths uses four urls which should be configured in the settings.
 
-  # settings.py
+    # settings.py
 
-  # These are the default values
-  LOGIN_URL = '/connect/'
-  LOGOUT_URL = '/disconnect/'
-  LOGIN_CALLBACK_URL = '/callback/'
-  LOGIN_REDIRECT_URL = '/'
+    # These are the default values
+    LOGIN_URL = '/connect/'
+    LOGOUT_URL = '/disconnect/'
+    LOGIN_CALLBACK_URL = '/callback/'
+    LOGIN_REDIRECT_URL = '/'
 
 
 Providers
