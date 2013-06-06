@@ -51,7 +51,7 @@ def backend(provider=settings.AUTH_DEFAULT_PROVIDER, **creds):
     Return an adapter object for given provider with credentials defined
     in settings.
     """
-    module = import_module(params.get('app', '.'.format([__name__, provider])))
+    module = import_module(creds.get('app', '.'.join([__name__, provider])))
     return module.Backend(**creds)
 
 
