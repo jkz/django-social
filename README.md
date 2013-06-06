@@ -34,37 +34,30 @@ Installation
 
 Protocols & Backends
 --------------------
-    protocols.Protocol
-
-Provides an interface for (third party) authorization
+`protocols.Protocol`
+provides an interface for (third party) authorization
 sources. It specifies the authentication flow with two methods:
 
-    request(request, callback_url)
-
+`request(request, callback_url)`
 This returns a url which will initiate the authentication flow. Afterwards, the
 user should be redirected to the callback_url.
 
-    callback(request)
-
+`callback(request)`
 Completes the authentication flow and returns a dictionary with the resulting
 credentials.
 
-    logout(request)
-
+`logout(request)`
 Defaults to Djangos native logout mechanism but allows alternatives by
 overriding this method.
 
-    backends.Backend
-
+`backends.Backend`
 Provides an interface for turning credentials into a user
 object of its associated service provider.
 
-    authenticate(\*\*creds)
-
+`authenticate(\*\*creds)`
 Returns a User object authenticated by given credentials.
 
-    `get_user(self, pk)`
-
+`get_user(self, pk)`
 Returns an instance of the User model found in the module of the backend.
 
 Configuration
