@@ -1,4 +1,5 @@
 Django==1.5
 django-celery
 
--e git+https://github.com/jessethegame/python-www.git#egg=ww
+-e git+https://github.com/jessethegame/python-www.git#egg=www
+
