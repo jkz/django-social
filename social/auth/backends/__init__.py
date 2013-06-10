@@ -6,7 +6,7 @@ from django.utils.importlib import import_module
 from django.conf import settings
 from django.contrib import auth
 
-class Backend:
+class Backend(object):
     """
     The interface for an authentication consumer.
     """
@@ -15,7 +15,7 @@ class Backend:
 
     def __init__(self, **creds):
         if not creds:
-            params = settings.PROVIDERS.get(provider, {})
+            params = settings.PROVIDERS.get(settings.AUTH_DEFAULT_PROVIDER, {})
             try:
                 creds = params['creds']
             except (KeyError, TypeError):

@@ -18,12 +18,15 @@ class Protocol(Protocol):
     def __init__(self, authority):
         self.authority = authority
 
+    def _callback_session_key(self):
+        return '{}_oauth2_callback_session_key'.format(self.authority.connection.host)
+
     def _secret_session_key(self):
-        return '{}_oauth2_secret_session_key'.format(self.host)
+        return '{}_oauth2_secret_session_key'.format(self.authority.connection.host)
 
     def request(self, request, callback_url, **kwargs):
         # Callback url is saved so it can be passed to an exchange_code call.
-        request.session[self._secret_session_key()] = callback_url
+        request.session[self._callback_session_key()] = callback_url
         return self.authority.request_code(callback_url, **kwargs)
 
     def callback(self, request, **kwargs):
@@ -36,8 +39,8 @@ class Protocol(Protocol):
 
         # Retrieve the callback url that was saved, otherwise build it
         callback_url = request.session.get(
-                self._secret_session_key(),
-                request.get_host() + request.path)
+                self._callback_session_key(),
+                request.build_absolute_uri(request.path))
 
         return self.authority.exchange_code(code, callback_url, **kwargs)
 

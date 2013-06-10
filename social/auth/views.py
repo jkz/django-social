@@ -18,9 +18,10 @@ def _build_callback_url(request):
     Return the configured callback path tacked to scheme and host
     discovered from request object.
     """
+    return request.build_absolute_uri(settings.LOGIN_CALLBACK_URL)
     scheme = request.META.get('wsgi.url_scheme', 'http')
     #XXX this could be spoofed, perhaps use django.contrib.sites
-    host = request.META.get('HTTP_HOST')
+    host = request.META.get('HTTP_HOST', request.META.get('SERVER_NAME'))
     return '{}://{}{}'.format(scheme, host, settings.LOGIN_CALLBACK_URL)
 
 

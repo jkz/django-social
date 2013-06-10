@@ -3,7 +3,7 @@ This package contains authentications protocols.
 """
 from django.contrib import auth
 
-class Protocol:
+class Protocol(object):
     """
     The interface for an authority that provides authentication hooks.
     """
